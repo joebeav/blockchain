@@ -1,3 +1,5 @@
+# here are bugs, users and subreddits part are fixed in _user_subreddit.py file
+
 import json
 import sys
 import re
@@ -143,32 +145,52 @@ threads_df.to_csv('thread_eda_data.tsv', index=False, sep='\t')
 print('3. Assembling USERS DataFrame (user_df)...')
 for user_id, month_content in temp_users.items():
 	users['user_id'].append(user_id)
-	for month, content in month_content.items():
-		num_thread = len(content['thread_id'])
-		num_subreddit = len(content['subreddit'])
+	# for month, content in month_content.items():
+	for month in unique_months:
+		content = month_content.get(month, None)
+		if content:
+			num_thread = len(content['thread_id'])
+			num_subreddit = len(content['subreddit'])
+			num_comment = content['num_comment']
+		else:
+			num_thread, num_subreddit, num_comment = 0, 0, 0
+
+
 		users[month+'_num_thread'].append(num_thread)
-		users[month+'_num_comment'].append(content['num_comment'])
+		users[month+'_num_comment'].append(num_comment)
 		users[month+'_num_subreddit'].append(num_subreddit)
+
+for key, value in users.items():
+	print(key, len(value))
 	
 user_df = pd.DataFrame(users)
 user_df.to_csv('user_eda_data.tsv', index=False, sep='\t')
 
+
 print('4. Assembling SUBREDDIT DataFrame (subreddit_df)...')
 for subreddit_name, month_content in temp_subreddit.items():
 	subreddits['subreddit'].append(subreddit_name)
-	for month, content in month_content.items():
-		num_thread = len(content['thread'])
-		num_comment = content['num_comment']
-		num_user = len(content['user'])
-		num_unique_user = len(set(content['user']))
-
+	# for month, content in month_content.items():
+	for month in unique_months:
+		content = month_content.get(month, None)
+		if content:
+			num_thread = len(content['thread'])
+			num_comment = content['num_comment']
+			num_user = len(content['user'])
+			num_unique_user = len(set(content['user']))
+		else:
+			num_thread, num_comment, num_user, num_unique_user = 0, 0, 0, 0
 
 		subreddits[month+'_num_thread'].append(num_thread)
 		subreddits[month+'_num_comment'].append(num_comment)
 		subreddits[month+'_num_user'].append(num_user)
 		subreddits[month+'_num_unique_user'].append(num_unique_user)
+
+for key, value in subreddits.items():
+	print(key, len(value))
 subreddit_df = pd.DataFrame(subreddits)
 subreddit_df.to_csv('subreddit_eda_data.tsv', index=False, sep='\t')
+
 
 # print(comments_df)
 
