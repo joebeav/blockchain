@@ -1,0 +1,28 @@
+#PBS -N collectData
+#PBS -M yizezang@umich.edu
+#PBS -m abe
+
+#PBS -l walltime=8:00:00
+#PBS -l procs=6,pmem=1gb
+#PBS -j oe
+#PBS -V python-anaconda3/201704
+#PBS -A si699w18_fluxm 
+#PBS -l qos=flux 
+#PBS -q fluxm
+
+
+# normal comment
+
+if [ "x${PBS_NODEFILE}" != "x" ] ; then
+   cat $PBS_NODEFILE   # contains a list of the CPUs you were using if run with PBS
+fi
+
+
+###PYTHON CODE####
+
+cd $PBS_O_WORKDIR
+pwd
+
+
+###change this to you python file name
+python collect_data.py
