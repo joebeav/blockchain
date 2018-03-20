@@ -55,7 +55,7 @@ def read_and_store(year, month):
     print("reading")
 
     now = time.time()
-    in_path = "../../../jiaqima/BlockChain" + year + "-" + month + ".bz2"
+    in_path = "../../../jiaqima/BlockChain/" + year + "-" + month + ".bz2"
     out_path_comments = "intermed/documents/documents-" + year + "-" + month + ".json"
     out_path_nounverb = "intermed/nounVerbs/nounVerbs-" + year + "-" + month + ".json"
 
@@ -131,7 +131,7 @@ def calculate_tfidf(documents, year, month):
         f.close()
 
     else:
-        tfidf = json.load(tfidfPath)
+        tfidf = json.load(open(tfidfPath, 'r'))
 
     return tfidf
 
@@ -258,9 +258,9 @@ def best_split(wordPairs):
     for i, communities in enumerate(communities_generator):
         p = performance(Graph, communities)
         c = coverage(Graph, communities)
-        if p*c > max_pc:
+        if 2*p*c/(p+c) > max_pc:
             max_index = i
-            max_pc = p*c
+            max_pc = 2*p*c/(p+c)
             best_communities = communities
     return (max_index, max_pc, best_communities)
 
@@ -298,8 +298,8 @@ def glove(year, month, documents, preloadEmbeddings, preloadW2c):
         pickle.dump(w2c, open(w2cPath, "wb+"))
 
     else:
-        embeddings = pickle.load(embPath)
-        w2c = pickle.load(w2cPath)
+        embeddings = pickle.load(open(embPath, 'rb+'))
+        w2c = pickle.load(open(w2cPath, 'rb+'))
 
     return embeddings, w2c
 
