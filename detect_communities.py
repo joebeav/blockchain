@@ -12,13 +12,12 @@ def detect_communities(year, month, preloadEmb = None, preloadW2c = None):
 
     """ load documents """
     documents, nvList = read_and_store(year, month)
-    documents = documents[:100] # using a small portion for test runs, comment this line for real runs
 
     """ calculate tf-idf """
     tfIdf_dict = calculate_tfidf(documents, year, month)
 
     """ keep only the relevant terms """
-    tfIdf_clean = clean(tfIdf_dict, nvList)[:100] # using only top100 for test runs, change to 1000 for real runs
+    tfIdf_clean = clean(tfIdf_dict, nvList)[:1000] # using only top100 for test runs, change to 1000 for real runs
 
     """ load trained embeddings """
     trainedEmb, word2code = glove(year, month, documents, preloadEmb, preloadW2c)
@@ -48,23 +47,23 @@ def detect_communities(year, month, preloadEmb = None, preloadW2c = None):
     #         thresholdOPT = k
     #         communityOPT = best_communities
 
-    """ find most similar pairs based on cosine similarity """
-    top_pairs = top_sim(trainedEmb, word2code, tfIdf_clean, k=1)
+    #""" find most similar pairs based on cosine similarity """
+    #top_pairs = top_sim(trainedEmb, word2code, tfIdf_clean, k=2)
 
-    """ find the best partition and performance for this threshold """
-    best_index, best_perfm, best_communities = best_split(top_pairs)
-    community_list = []
-    for community in best_communities:
-        community_list.append(community)
+    #""" find the best partition and performance for this threshold """
+    #best_index, best_perfm, best_communities = best_split(top_pairs)
+    #community_list = []
+    #for community in best_communities:
+    #    community_list.append(list(community))
 
-    return trainedEmb, word2code, community_list
+    return trainedEmb, word2code
 
 def main():
 
-    year_0 = ["2011", "2012", "2013", "2014", "2015", "2016", "2017"]
+    year_0 = ["2013", "2014", "2015", "2016", "2017"]
     month_0 = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
     year_1 = ["2011"]
-    month_1 = ["01", "02"]
+    month_1 = ["02", "03"]
     embed = None
     w2c = None
     communities = {}
@@ -73,16 +72,16 @@ def main():
         for month in month_0:
 
             """ examine if file exist """
-            filePath = "../../../jiaqima/BlockChain" + year + "-" + month + ".bz2"
+            filePath = "../../../jiaqima/BlockChain/" + year + "-" + month + ".bz2"
             if not os.path.isfile(filePath):
                 break
 
             """ calculate word embeddings for this month, and find the communities """
             print("processing the data in {} {}".format(year, month))
-            embed, w2c, community = detect_communities(year, month, embed, w2c)
-            communities[int(year+month)] = community
+            embed, w2c = detect_communities(year, month, embed, w2c)
+            #communities[int(year+month)] = community
 
-    json.dump(communities, open("results/communities.json", 'w'))
+    #json.dump(communities, open("results/communities.json", 'w'))
 
     return
 
