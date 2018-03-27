@@ -1,5 +1,5 @@
 """
-Adapted from the work of Grady Simon's work to allow specified initialization.
+Adapted from Grady Simon's work to allow specified initialization.
 See original repo: https://github.com/GradySimon/tensorflow-glove/blob/master/tf_glove.py
 """
 
